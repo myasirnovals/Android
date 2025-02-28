@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Belajar-android-dasar</string>
+    <string name="nameEditTeks">Nama :</string>
+    <string name="sayHelloButton">Ucapkan Halo</string>
+    <string name="sayHelloTextView">Halo %1$s</string>
+</resources>

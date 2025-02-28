@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Blue Archive Student</string>
+    <string name="profile">Profile</string>
+    <string name="name">Muhamad Yasir Noval</string>
+    <string name="email">aibnu0371@gmail.com</string>
+    <string name="student_name">Nama Siswa</string>
+    <string name="student_academy">Nama Akademi</string>
+    <string name="student_detail">Detail Siswa</string>
+    <string name="student_description">Deskripsi</string>
+    <string name="title_detail">Nama \nAkademi \nHobi \nKlub \nKelas \nQuote </string>
+    <string name="title_about_detail">Contact \n  \nTwitter \nInstagram \nFacebook \nLinkedIn \n \nDicoding \n </string>
+    <string name="about_detail">\n \n- \n- \n- \nhttps://www.linkedin.com/in/muhamad-yasir-noval-35491a1a9/ \nhttps://www.dicoding.com/users/yan0871 </string>
+    <string name="content_overview">Content Overview</string>
+    <string name="content_detail">Content Detail</string>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Belajar-android-dasar</string>
+    <string name="nameEditTeks">Name :</string>
+    <string name="sayHelloButton">Say Hello</string>
+    <string name="sayHelloTextView">Hello %1$s</string>
+    <string-array name="names">
+        <item>Muhamad</item>
+        <item>Yasir</item>
+        <item>Noval</item>
+    </string-array>
+</resources>
