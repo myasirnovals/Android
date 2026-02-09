@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SimpleCalculator</string>
     <string name="numbers_value">0</string>
+    <string name="first_number_hint">Put your first number here</string>
+    <string name="first_number">First Number: </string>
+    <string name="second_number_hint">Put your second number here</string>
+    <string name="second_number">Second Number: </string>
 </resources>
