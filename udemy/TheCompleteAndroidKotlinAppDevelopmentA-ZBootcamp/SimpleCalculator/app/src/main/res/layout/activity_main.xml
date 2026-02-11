@@ -11,18 +11,19 @@
         android:id="@+id/txtFirstInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/first_number"
         android:labelFor="@+id/edtFirstValue"
+        android:text="@string/first_number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edtFirstValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="0"
-        android:minHeight="48dp"
         android:hint="@string/first_number_hint"
+        android:inputType="number"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtFirstInput" />
@@ -31,18 +32,19 @@
         android:id="@+id/txtSecondInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/second_number"
         android:labelFor="@+id/edtSecondValue"
+        android:text="@string/second_number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtFirstValue"/>
+        app:layout_constraintTop_toBottomOf="@id/edtFirstValue" />
 
     <EditText
         android:id="@+id/edtSecondValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="0"
+        android:hint="@string/second_number_hint"
+        android:inputType="number"
         android:minHeight="48dp"
-        android:hint="@string/first_number_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtSecondInput" />
