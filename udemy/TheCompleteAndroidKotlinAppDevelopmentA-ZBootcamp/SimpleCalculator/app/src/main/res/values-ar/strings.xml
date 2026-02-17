@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">آلة حاسبة بسيطة</string>
+    <string name="numbers_value">0</string>
+    <string name="first_number_hint">أدخل رقمك الأول هنا</string>
+    <string name="first_number">الرقم الأول:</string>
+    <string name="second_number_hint">أدخل رقمك الثاني هنا</string>
+    <string name="second_number">الرقم الثاني:</string>
+    <string name="operator_plus">+</string>
+    <string name="operator_minus">-</string>
+    <string name="operator_div">/</string>
+    <string name="operator_multi">*</string>
+</resources>

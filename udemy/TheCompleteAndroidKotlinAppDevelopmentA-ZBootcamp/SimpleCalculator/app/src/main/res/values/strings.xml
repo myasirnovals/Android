@@ -5,4 +5,8 @@
     <string name="first_number">First Number: </string>
     <string name="second_number_hint">Put your second number here</string>
     <string name="second_number">Second Number: </string>
+    <string name="operator_plus">+</string>
+    <string name="operator_minus">-</string>
+    <string name="operator_div">/</string>
+    <string name="operator_multi">*</string>
 </resources>
