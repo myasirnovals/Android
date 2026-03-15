@@ -97,4 +97,33 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txtResultLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_result"
+        android:layout_margin="@dimen/normalMargin"
+        android:padding="@dimen/normalPadding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/txtResultLabel"/>
+
+    <TextView
+        android:id="@+id/txtResult"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normalMargin"
+        android:padding="@dimen/normalPadding"
+        tools:text="01234567890123456789"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtResultLabel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,4 +9,7 @@
     <string name="operator_minus">-</string>
     <string name="operator_div">/</string>
     <string name="operator_multi">*</string>
+    <string name="str_result">Result</string>
+    <string name="str_enter_first_number">Please Enter First Number</string>
+    <string name="str_enter_second_number">Please Enter Second Number</string>
 </resources>
