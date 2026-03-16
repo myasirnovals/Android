@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="0">
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#000000" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#000000" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#cccccc" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#cccccc" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#d44ec7" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#d44ec7" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#844eff" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#844eff" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#045f11" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#045f11" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#440000" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#440000" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#884400" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#884400" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#aa8844" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#aa8844" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#ffaa88" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#ffaa88" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#ffffaa" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#ffffaa" />
+        </TableRow>
+
+        <TableRow>
+
+            <View
+                android:layout_height="80px"
+                android:background="#ffffff" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="#ffffff" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView android:text="Muhamad Yasir Noval" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4px"
+                android:text="2350081004" />
+        </TableRow>
+    </TableLayout>
+</ScrollView>
