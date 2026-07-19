@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.AplikasiAnggaran" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/budget_primary</item>
+        <item name="colorOnPrimary">@color/budget_on_primary</item>
+        <item name="colorPrimaryContainer">@color/budget_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/budget_on_primary_container</item>
+        <item name="colorSecondary">@color/budget_secondary</item>
+        <item name="colorOnSecondary">@color/budget_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/budget_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/budget_on_secondary_container</item>
+        <item name="colorTertiary">@color/budget_tertiary</item>
+        <item name="colorOnTertiary">@color/budget_on_tertiary</item>
+        <item name="android:colorBackground">@color/budget_background</item>
+        <item name="colorSurface">@color/budget_surface</item>
+        <item name="colorOnSurface">@color/budget_text</item>
+        <item name="colorError">@color/budget_error</item>
+    </style>
+
+    <style name="Theme.AplikasiAnggaran" parent="Base.Theme.AplikasiAnggaran" />
+</resources>

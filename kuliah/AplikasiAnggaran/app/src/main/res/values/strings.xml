@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Aplikasi Anggaran</string>
+    <string name="app_title">Aplikasi Pencatatan Anggaran Bulanan</string>
+    <string name="app_subtitle">Catat pemasukan, pengeluaran, dan dana darurat per bulan di perangkat Android Anda.</string>
+    <string name="active_month_label">Bulan aktif</string>
+    <string name="active_month_hint">Pilih bulan dan tahun laporan</string>
+    <string name="choose_month">Pilih bulan aktif</string>
+    <string name="summary_title">Ringkasan Keuangan</string>
+    <string name="warning_title">Status Dana Darurat</string>
+    <string name="warning_safe">Dana darurat aman.</string>
+    <string name="warning_deposit_low">Setoran dana darurat bulan ini belum mencapai Rp500.000.</string>
+    <string name="warning_balance_low">Saldo dana darurat menipis karena masih di bawah Rp100.000.</string>
+    <string name="opening_balance">Saldo awal bulan</string>
+    <string name="income_total">Total pemasukan</string>
+    <string name="expense_total">Total pengeluaran</string>
+    <string name="emergency_fund">Dana darurat</string>
+    <string name="remaining_budget">Sisa anggaran</string>
+    <string name="form_title">Tambah Catatan Transaksi</string>
+    <string name="transaction_date">Tanggal transaksi</string>
+    <string name="choose_date">Pilih tanggal</string>
+    <string name="transaction_type">Jenis transaksi</string>
+    <string name="category">Kategori</string>
+    <string name="amount">Jumlah rupiah</string>
+    <string name="description">Keterangan</string>
+    <string name="transaction_category">Kategori transaksi</string>
+    <string name="save_transaction">Simpan transaksi</string>
+    <string name="actions_title">Aksi Laporan</string>
+    <string name="share_report">Bagikan laporan</string>
+    <string name="print_report">Cetak laporan</string>
+    <string name="export_csv">Simpan CSV</string>
+    <string name="import_csv">Load CSV</string>
+    <string name="delete_all">Hapus semua data</string>
+    <string name="report_title">Laporan Bulanan</string>
+    <string name="report_empty">Belum ada catatan anggaran pada bulan ini.</string>
+    <string name="table_title">Daftar Transaksi</string>
+    <string name="no_description">Tidak ada keterangan</string>
+    <string name="delete">Hapus</string>
+    <string name="transaction_number_prefix">#</string>
+    <string name="transaction_type_prompt">Pilih jenis transaksi</string>
+    <string name="transaction_type_income">Pemasukan</string>
+    <string name="transaction_type_expense">Pengeluaran</string>
+    <string name="transaction_type_emergency">Setor Dana Darurat</string>
+    <string name="transaction_type_emergency_withdraw">Ambil Dana Darurat</string>
+    <string-array name="transaction_categories">
+        <item>@string/transaction_type_prompt</item>
+        <item>@string/transaction_type_income</item>
+        <item>@string/transaction_type_expense</item>
+        <item>@string/transaction_type_emergency</item>
+        <item>@string/transaction_type_emergency_withdraw</item>
+    </string-array>
+    <string name="transaction_date_required">Tanggal transaksi wajib diisi.</string>
+    <string name="transaction_type_required">Jenis transaksi wajib dipilih.</string>
+    <string name="category_required">Kategori transaksi wajib diisi.</string>
+    <string name="amount_required">Jumlah transaksi wajib diisi.</string>
+    <string name="amount_invalid">Jumlah transaksi harus lebih dari 0.</string>
+    <string name="outside_active_month">Tanggal transaksi harus berada pada bulan aktif.</string>
+    <string name="emergency_deposit_exceeds">Setoran dana darurat melebihi saldo tersedia.</string>
+    <string name="emergency_withdraw_exceeds">Pengambilan dana darurat melebihi saldo dana darurat.</string>
+    <string name="no_data_to_export">Belum ada data untuk diekspor.</string>
+    <string name="no_data_to_delete">Belum ada data yang dapat dihapus.</string>
+    <string name="import_success">Data CSV berhasil diimpor.</string>
+    <string name="export_success">File CSV berhasil disimpan.</string>
+    <string name="share_subject">Laporan Anggaran Bulanan</string>
+    <string name="share_chooser">Bagikan laporan melalui</string>
+    <string name="import_file_title">Pilih file CSV</string>
+    <string name="export_file_prefix">budget-data-</string>
+    <string name="confirm_delete_title">Hapus transaksi?</string>
+    <string name="confirm_delete_message">Transaksi ini akan dihapus permanen.</string>
+    <string name="confirm_delete_all_title">Hapus semua data?</string>
+    <string name="confirm_delete_all_message">Seluruh transaksi dari semua bulan akan dihapus.</string>
+    <string name="confirm_import_title">Ganti data dengan CSV?</string>
+    <string name="confirm_import_message">Data lama akan diganti dengan isi file CSV.</string>
+    <string name="csv_invalid_header">Header CSV tidak sesuai format yang diharapkan.</string>
+    <string name="csv_invalid_row">Baris CSV tidak valid.</string>
+    <string name="csv_empty">File CSV kosong.</string>
+    <string name="csv_read_error">Gagal membaca file CSV.</string>
+    <string name="active_month_display">Bulan aktif: %1$s</string>
+    <string name="report_month_display">Periode laporan: %1$s</string>
+    <string name="report_print_date">Tanggal cetak: %1$s</string>
+    <string-array name="transaction_types">
+        <item>@string/transaction_type_prompt</item>
+        <item>@string/transaction_type_income</item>
+        <item>@string/transaction_type_expense</item>
+        <item>@string/transaction_type_emergency</item>
+        <item>@string/transaction_type_emergency_withdraw</item>
+    </string-array>
+</resources>
