@@ -102,28 +102,11 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/chooseMonthButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/choose_month" />
 
-                    <TextView
-                        android:id="@+id/selectedDateText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:textColor="@color/budget_text_muted"
-                        android:textStyle="bold" />
                 </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/chooseDateButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:text="@string/choose_date" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

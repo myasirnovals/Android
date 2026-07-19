@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
@@ -94,8 +95,12 @@ public class MainActivity extends AppCompatActivity {
         setupTransactionTypeSpinner();
         setupRecyclerView();
 
-        activeMonth = preferences.getString(KEY_ACTIVE_MONTH, getCurrentMonthValue());
-        selectedDate = getFirstDayOfMonth(activeMonth);
+        // PENGAMAN: Selalu atur tanggal, bulan, dan tahun sesuai sistem smartphone saat aplikasi dimulai
+        selectedDate = dateFormat.format(new Date());
+        activeMonth = selectedDate.substring(0, 7); // Mengambil yyyy-MM
+        
+        preferences.edit().putString(KEY_ACTIVE_MONTH, activeMonth).apply();
+
         updateMonthUi();
         updateDateUi();
         renderData();
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         amountInput = findViewById(R.id.amountInput);
         descriptionInput = findViewById(R.id.descriptionInput);
 
-        MaterialButton chooseMonthButton = findViewById(R.id.chooseMonthButton);
+        // Tombol pemilihan bulan atas sudah dihapus dari XML, jadi tidak di-bind di sini
         MaterialButton chooseDateButton = findViewById(R.id.chooseDateButton);
         MaterialButton saveButton = findViewById(R.id.saveButton);
         MaterialButton shareButton = findViewById(R.id.shareButton);
@@ -133,8 +138,9 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton importButton = findViewById(R.id.importButton);
         MaterialButton deleteAllButton = findViewById(R.id.deleteAllButton);
 
-        chooseMonthButton.setOnClickListener(view -> showMonthPicker());
-        chooseDateButton.setOnClickListener(view -> showDatePicker());
+        if (chooseDateButton != null) {
+            chooseDateButton.setOnClickListener(view -> showDatePicker());
+        }
         saveButton.setOnClickListener(view -> saveTransaction());
         shareButton.setOnClickListener(view -> shareReport());
         printButton.setOnClickListener(view -> shareReport());
@@ -160,49 +166,33 @@ public class MainActivity extends AppCompatActivity {
         transactionRecyclerView.setAdapter(adapter);
     }
 
-    private void showMonthPicker() {
-        String[] parts = activeMonth.split("-");
-        int year = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]) - 1;
-
-        DatePickerDialog dialog = new DatePickerDialog(
-                this,
-                (DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) -> {
-                    activeMonth = String.format(Locale.US, "%04d-%02d", selectedYear, selectedMonth + 1);
-                    preferences.edit().putString(KEY_ACTIVE_MONTH, activeMonth).apply();
-                    selectedDate = getFirstDayOfMonth(activeMonth);
-                    updateMonthUi();
-                    updateDateUi();
-                    renderData();
-                },
-                year,
-                month,
-                1
-        );
-        dialog.getDatePicker().setCalendarViewShown(false);
-        dialog.getDatePicker().setSpinnersShown(true);
-        dialog.show();
-    }
-
     private void showDatePicker() {
-        String[] parts = activeMonth.split("-");
+        // Gunakan tanggal yang sedang terpilih sebagai default di dialog
+        String[] parts = selectedDate.split("-");
         int year = Integer.parseInt(parts[0]);
         int month = Integer.parseInt(parts[1]) - 1;
+        int day = Integer.parseInt(parts[2]);
 
         DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 (DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) -> {
                     selectedDate = String.format(Locale.US, "%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDayOfMonth);
+                    
+                    // OTOMATIS: Update bulan aktif berdasarkan tanggal yang baru dipilih
+                    String newActiveMonth = selectedDate.substring(0, 7);
+                    if (!newActiveMonth.equals(activeMonth)) {
+                        activeMonth = newActiveMonth;
+                        preferences.edit().putString(KEY_ACTIVE_MONTH, activeMonth).apply();
+                        updateMonthUi();
+                    }
+                    
                     updateDateUi();
+                    renderData(); // Render ulang agar ringkasan & daftar transaksi sinkron dengan bulan terpilih
                 },
                 year,
                 month,
-                1
+                day
         );
-        dialog.getDatePicker().setMinDate(getMonthStartMillis(activeMonth));
-        dialog.getDatePicker().setMaxDate(getMonthEndMillis(activeMonth));
-        dialog.getDatePicker().setCalendarViewShown(false);
-        dialog.getDatePicker().setSpinnersShown(true);
         dialog.show();
     }
 
@@ -244,11 +234,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (!isDateInActiveMonth(selectedDate)) {
-            toast(getString(R.string.outside_active_month));
-            return;
-        }
-
+        // Karena pemilihan tanggal otomatis memperbarui activeMonth, pengecekan isDateInActiveMonth dihilangkan
         Summary summary = calculateSummary(activeMonth, allTransactions);
         if (Transaction.TYPE_EMERGENCY.equals(type) && amount > summary.availableBalanceForEmergencyDeposit()) {
             toast(getString(R.string.emergency_deposit_exceeds));
@@ -381,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Transaction> activeTransactions = getActiveTransactions();
         adapter.setItems(activeTransactions);
-        emptyStateText.setVisibility(activeTransactions.isEmpty() ? android.view.View.VISIBLE : android.view.View.GONE);
+        emptyStateText.setVisibility(activeTransactions.isEmpty() ? View.VISIBLE : View.GONE);
 
         Summary summary = calculateSummary(activeMonth, allTransactions);
         openingBalanceValue.setText(formatCurrency(summary.openingBalance));
@@ -390,23 +376,31 @@ public class MainActivity extends AppCompatActivity {
         emergencyValue.setText(formatCurrency(summary.emergencyFund));
         remainingValue.setText(formatCurrency(summary.remainingBudget));
         warningText.setText(summary.warningMessage);
+        
+        if (activeMonthText != null) {
+            activeMonthText.setText(getString(R.string.active_month_display, activeMonth));
+        }
         reportMonthText.setText(getString(R.string.report_month_display, activeMonth));
         reportDateText.setText(getString(R.string.report_print_date, printableDateFormat.format(new Date())));
     }
 
     private void updateMonthUi() {
-        activeMonthText.setText(getString(R.string.active_month_display, activeMonth));
+        if (activeMonthText != null) {
+            activeMonthText.setText(getString(R.string.active_month_display, activeMonth));
+        }
     }
 
     private void updateDateUi() {
-        selectedDateText.setText(selectedDate);
+        if (selectedDateText != null) {
+            selectedDateText.setText(selectedDate);
+        }
     }
 
     private void clearForm() {
         transactionCategorySpinner.setSelection(0);
         amountInput.setText("");
         descriptionInput.setText("");
-        selectedDate = getFirstDayOfMonth(activeMonth);
+        // Tanggal tidak direset ke hari pertama agar pengguna bisa input beberapa data di hari yang sama dengan cepat
         updateDateUi();
     }
 
@@ -418,6 +412,7 @@ public class MainActivity extends AppCompatActivity {
         builder.append(getString(R.string.report_print_date, printableDateFormat.format(new Date()))).append('\n');
         builder.append('\n');
         builder.append(getString(R.string.opening_balance)).append(": ").append(formatCurrency(summary.openingBalance)).append('\n');
+        builder.append(getString(R.string.opening_emergency_fund)).append(": ").append(formatCurrency(summary.openingEmergencyFund)).append('\n');
         builder.append(getString(R.string.income_total)).append(": ").append(formatCurrency(summary.incomeTotal)).append('\n');
         builder.append(getString(R.string.expense_total)).append(": ").append(formatCurrency(summary.expenseTotal)).append('\n');
         builder.append(getString(R.string.emergency_fund)).append(": ").append(formatCurrency(summary.emergencyFund)).append('\n');
@@ -454,46 +449,43 @@ public class MainActivity extends AppCompatActivity {
         String lastDay = getLastDayOfMonth(activeMonthValue);
 
         long openingBalance = 0L;
+        long openingEmergencyFund = 0L;
         long incomeTotal = 0L;
         long expenseTotal = 0L;
         long emergencyDepositTotal = 0L;
         long emergencyWithdrawTotal = 0L;
-        long emergencyFund = 0L;
 
         for (Transaction transaction : transactions) {
-            if (transaction.getDate().compareTo(firstDay) < 0) {
+            String date = transaction.getDate();
+            if (date.compareTo(firstDay) < 0) {
                 if (Transaction.TYPE_INCOME.equals(transaction.getType())) {
                     openingBalance += transaction.getAmount();
                 } else if (Transaction.TYPE_EXPENSE.equals(transaction.getType())) {
                     openingBalance -= transaction.getAmount();
                 } else if (Transaction.TYPE_EMERGENCY.equals(transaction.getType())) {
-                    openingBalance -= transaction.getAmount();
-                    emergencyFund += transaction.getAmount();
+                    // Skenario baru: Sisa dana darurat bulan lalu otomatis jadi saldo awal bulan ini
                 } else if (Transaction.TYPE_EMERGENCY_WITHDRAW.equals(transaction.getType())) {
                     openingBalance -= transaction.getAmount();
-                    emergencyFund -= transaction.getAmount();
                 }
-            }
-
-            if (transaction.getDate().compareTo(firstDay) >= 0 && transaction.getDate().compareTo(lastDay) <= 0) {
+            } else if (date.compareTo(firstDay) >= 0 && date.compareTo(lastDay) <= 0) {
                 if (Transaction.TYPE_INCOME.equals(transaction.getType())) {
                     incomeTotal += transaction.getAmount();
                 } else if (Transaction.TYPE_EXPENSE.equals(transaction.getType())) {
                     expenseTotal += transaction.getAmount();
                 } else if (Transaction.TYPE_EMERGENCY.equals(transaction.getType())) {
                     emergencyDepositTotal += transaction.getAmount();
-                    emergencyFund += transaction.getAmount();
                 } else if (Transaction.TYPE_EMERGENCY_WITHDRAW.equals(transaction.getType())) {
                     emergencyWithdrawTotal += transaction.getAmount();
-                    emergencyFund -= transaction.getAmount();
                 }
             }
         }
 
-        long totalExpense = expenseTotal + emergencyDepositTotal + emergencyWithdrawTotal;
+        long emergencyFund = emergencyDepositTotal - emergencyWithdrawTotal;
+        long totalExpense = expenseTotal + emergencyDepositTotal;
         long remainingBudget = openingBalance + incomeTotal - totalExpense;
         String warningMessage = buildWarningMessage(emergencyDepositTotal, emergencyFund);
-        return new Summary(openingBalance, incomeTotal, totalExpense, emergencyFund, remainingBudget, warningMessage);
+        
+        return new Summary(openingBalance, openingEmergencyFund, incomeTotal, totalExpense, emergencyFund, remainingBudget, warningMessage);
     }
 
     private String buildWarningMessage(long emergencyDepositTotal, long emergencyFund) {
@@ -558,14 +550,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static class Summary {
         private final long openingBalance;
+        private final long openingEmergencyFund;
         private final long incomeTotal;
         private final long expenseTotal;
         private final long emergencyFund;
         private final long remainingBudget;
         private final String warningMessage;
 
-        private Summary(long openingBalance, long incomeTotal, long expenseTotal, long emergencyFund, long remainingBudget, String warningMessage) {
+        private Summary(long openingBalance, long openingEmergencyFund, long incomeTotal, long expenseTotal, long emergencyFund, long remainingBudget, String warningMessage) {
             this.openingBalance = openingBalance;
+            this.openingEmergencyFund = openingEmergencyFund;
             this.incomeTotal = incomeTotal;
             this.expenseTotal = expenseTotal;
             this.emergencyFund = emergencyFund;

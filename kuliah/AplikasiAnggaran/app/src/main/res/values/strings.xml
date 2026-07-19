@@ -11,6 +11,7 @@
     <string name="warning_deposit_low">Setoran dana darurat bulan ini belum mencapai Rp500.000.</string>
     <string name="warning_balance_low">Saldo dana darurat menipis karena masih di bawah Rp100.000.</string>
     <string name="opening_balance">Saldo awal bulan</string>
+    <string name="opening_emergency_fund">Saldo awal dana darurat</string>
     <string name="income_total">Total pemasukan</string>
     <string name="expense_total">Total pengeluaran</string>
     <string name="emergency_fund">Dana darurat</string>
