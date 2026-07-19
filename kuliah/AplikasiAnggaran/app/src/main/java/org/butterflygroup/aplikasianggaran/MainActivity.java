@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    private final SimpleDateFormat monthValueFormat = new SimpleDateFormat("yyyy-MM", Locale.US);
     private final SimpleDateFormat printableDateFormat = new SimpleDateFormat("dd MMMM yyyy", new Locale("id", "ID"));
+    private final SimpleDateFormat monthDisplayFormat = new SimpleDateFormat("MMMM yyyy", new Locale("id", "ID"));
 
     private BudgetDatabaseHelper databaseHelper;
     private SharedPreferences preferences;
@@ -96,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
 
         // PENGAMAN: Selalu atur tanggal, bulan, dan tahun sesuai sistem smartphone saat aplikasi dimulai
-        selectedDate = dateFormat.format(new Date());
-        activeMonth = selectedDate.substring(0, 7); // Mengambil yyyy-MM
+        Date now = new Date();
+        activeMonth = monthValueFormat.format(now);
+        selectedDate = dateFormat.format(now);
         
         preferences.edit().putString(KEY_ACTIVE_MONTH, activeMonth).apply();
 
@@ -129,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         amountInput = findViewById(R.id.amountInput);
         descriptionInput = findViewById(R.id.descriptionInput);
 
-        // Tombol pemilihan bulan atas sudah dihapus dari XML, jadi tidak di-bind di sini
+        MaterialButton chooseMonthButton = findViewById(R.id.chooseMonthButton);
         MaterialButton chooseDateButton = findViewById(R.id.chooseDateButton);
         MaterialButton saveButton = findViewById(R.id.saveButton);
         MaterialButton shareButton = findViewById(R.id.shareButton);
@@ -138,9 +144,13 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton importButton = findViewById(R.id.importButton);
         MaterialButton deleteAllButton = findViewById(R.id.deleteAllButton);
 
+        if (chooseMonthButton != null) {
+            chooseMonthButton.setOnClickListener(view -> showMonthPicker());
+        }
         if (chooseDateButton != null) {
             chooseDateButton.setOnClickListener(view -> showDatePicker());
         }
+        
         saveButton.setOnClickListener(view -> saveTransaction());
         shareButton.setOnClickListener(view -> shareReport());
         printButton.setOnClickListener(view -> shareReport());
@@ -166,8 +176,56 @@ public class MainActivity extends AppCompatActivity {
         transactionRecyclerView.setAdapter(adapter);
     }
 
+    private void showMonthPicker() {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date current = monthValueFormat.parse(activeMonth);
+            if (current != null) calendar.setTime(current);
+        } catch (Exception ignored) {}
+
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+
+        final NumberPicker monthPicker = new NumberPicker(this);
+        monthPicker.setMinValue(0);
+        monthPicker.setMaxValue(11);
+        monthPicker.setValue(currentMonth);
+        monthPicker.setDisplayedValues(new String[]{
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        });
+
+        final NumberPicker yearPicker = new NumberPicker(this);
+        yearPicker.setMinValue(currentYear - 10);
+        yearPicker.setMaxValue(currentYear + 10);
+        yearPicker.setValue(currentYear);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER);
+        layout.setPadding(50, 40, 50, 0);
+        layout.addView(monthPicker);
+        layout.addView(yearPicker);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.choose_month)
+                .setView(layout)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    activeMonth = String.format(Locale.US, "%04d-%02d", yearPicker.getValue(), monthPicker.getValue() + 1);
+                    preferences.edit().putString(KEY_ACTIVE_MONTH, activeMonth).apply();
+                    
+                    // Reset selectedDate ke awal bulan yang dipilih agar sinkron
+                    selectedDate = activeMonth + "-01";
+                    
+                    updateMonthUi();
+                    updateDateUi();
+                    renderData();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     private void showDatePicker() {
-        // Gunakan tanggal yang sedang terpilih sebagai default di dialog
         String[] parts = selectedDate.split("-");
         int year = Integer.parseInt(parts[0]);
         int month = Integer.parseInt(parts[1]) - 1;
@@ -187,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     
                     updateDateUi();
-                    renderData(); // Render ulang agar ringkasan & daftar transaksi sinkron dengan bulan terpilih
+                    renderData();
                 },
                 year,
                 month,
@@ -234,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Karena pemilihan tanggal otomatis memperbarui activeMonth, pengecekan isDateInActiveMonth dihilangkan
         Summary summary = calculateSummary(activeMonth, allTransactions);
         if (Transaction.TYPE_EMERGENCY.equals(type) && amount > summary.availableBalanceForEmergencyDeposit()) {
             toast(getString(R.string.emergency_deposit_exceeds));
@@ -377,16 +434,14 @@ public class MainActivity extends AppCompatActivity {
         remainingValue.setText(formatCurrency(summary.remainingBudget));
         warningText.setText(summary.warningMessage);
         
-        if (activeMonthText != null) {
-            activeMonthText.setText(getString(R.string.active_month_display, activeMonth));
-        }
-        reportMonthText.setText(getString(R.string.report_month_display, activeMonth));
+        updateMonthUi();
+        reportMonthText.setText(getString(R.string.report_month_display, formatMonthDisplay(activeMonth)));
         reportDateText.setText(getString(R.string.report_print_date, printableDateFormat.format(new Date())));
     }
 
     private void updateMonthUi() {
         if (activeMonthText != null) {
-            activeMonthText.setText(getString(R.string.active_month_display, activeMonth));
+            activeMonthText.setText(getString(R.string.active_month_display, formatMonthDisplay(activeMonth)));
         }
     }
 
@@ -396,11 +451,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String formatMonthDisplay(String yearMonth) {
+        try {
+            Date date = monthValueFormat.parse(yearMonth);
+            return date != null ? monthDisplayFormat.format(date) : yearMonth;
+        } catch (Exception e) {
+            return yearMonth;
+        }
+    }
+
     private void clearForm() {
         transactionCategorySpinner.setSelection(0);
         amountInput.setText("");
         descriptionInput.setText("");
-        // Tanggal tidak direset ke hari pertama agar pengguna bisa input beberapa data di hari yang sama dengan cepat
         updateDateUi();
     }
 
@@ -408,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder builder = new StringBuilder();
         Summary summary = calculateSummary(activeMonth, allTransactions);
         builder.append(getString(R.string.app_title)).append('\n');
-        builder.append(getString(R.string.report_month_display, activeMonth)).append('\n');
+        builder.append(getString(R.string.report_month_display, formatMonthDisplay(activeMonth))).append('\n');
         builder.append(getString(R.string.report_print_date, printableDateFormat.format(new Date()))).append('\n');
         builder.append('\n');
         builder.append(getString(R.string.opening_balance)).append(": ").append(formatCurrency(summary.openingBalance)).append('\n');
@@ -449,7 +512,6 @@ public class MainActivity extends AppCompatActivity {
         String lastDay = getLastDayOfMonth(activeMonthValue);
 
         long openingBalance = 0L;
-        long openingEmergencyFund = 0L;
         long incomeTotal = 0L;
         long expenseTotal = 0L;
         long emergencyDepositTotal = 0L;
@@ -458,12 +520,13 @@ public class MainActivity extends AppCompatActivity {
         for (Transaction transaction : transactions) {
             String date = transaction.getDate();
             if (date.compareTo(firstDay) < 0) {
+                // Skenario baru: Sisa dana darurat bulan lalu otomatis jadi saldo awal bulan ini
                 if (Transaction.TYPE_INCOME.equals(transaction.getType())) {
                     openingBalance += transaction.getAmount();
                 } else if (Transaction.TYPE_EXPENSE.equals(transaction.getType())) {
                     openingBalance -= transaction.getAmount();
                 } else if (Transaction.TYPE_EMERGENCY.equals(transaction.getType())) {
-                    // Skenario baru: Sisa dana darurat bulan lalu otomatis jadi saldo awal bulan ini
+                    // Setoran tidak mengurangi openingBalance karena dana rolling di saldo utama
                 } else if (Transaction.TYPE_EMERGENCY_WITHDRAW.equals(transaction.getType())) {
                     openingBalance -= transaction.getAmount();
                 }
@@ -485,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
         long remainingBudget = openingBalance + incomeTotal - totalExpense;
         String warningMessage = buildWarningMessage(emergencyDepositTotal, emergencyFund);
         
-        return new Summary(openingBalance, openingEmergencyFund, incomeTotal, totalExpense, emergencyFund, remainingBudget, warningMessage);
+        return new Summary(openingBalance, 0, incomeTotal, totalExpense, emergencyFund, remainingBudget, warningMessage);
     }
 
     private String buildWarningMessage(long emergencyDepositTotal, long emergencyFund) {
@@ -502,23 +565,6 @@ public class MainActivity extends AppCompatActivity {
         return date != null && activeMonth != null && date.startsWith(activeMonth);
     }
 
-    private long getMonthStartMillis(String monthValue) {
-        Calendar calendar = Calendar.getInstance();
-        String[] parts = monthValue.split("-");
-        calendar.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, 1, 0, 0, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTimeInMillis();
-    }
-
-    private long getMonthEndMillis(String monthValue) {
-        Calendar calendar = Calendar.getInstance();
-        String[] parts = monthValue.split("-");
-        calendar.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, 1, 23, 59, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
-        return calendar.getTimeInMillis();
-    }
-
     private String getFirstDayOfMonth(String monthValue) {
         return monthValue + "-01";
     }
@@ -529,10 +575,6 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, 1);
         int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         return String.format(Locale.US, "%04d-%02d-%02d", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), lastDay);
-    }
-
-    private String getCurrentMonthValue() {
-        return new SimpleDateFormat("yyyy-MM", Locale.US).format(new Date());
     }
 
     private String safeText(TextInputEditText input) {
